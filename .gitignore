@@ -1,0 +1,17 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+/.idea/.idea.NotesApp/.idea/vcs.xml
+/.idea/.idea.NotesApp/.idea/indexLayout.xml
+/.idea/.idea.NotesApp/.idea/encodings.xml
+/.idea/.idea.NotesApp/.idea/dictionaries/MKhme.xml
+/.idea/.idea.NotesApp/.idea/codeStyles/codeStyleConfig.xml
+/.idea/.idea.NotesApp/.idea/.gitignore
+/.vs/ProjectEvaluation/notesapp.projects.v6.1
+/.vs/ProjectEvaluation/notesapp.metadata.v6.1
+/.vs/NotesApp/v17/.suo
+/.vs/NotesApp/FileContentIndex/read.lock
+/.vs/NotesApp/FileContentIndex/4a7cbc68-0671-40d2-b32b-cb3189e5f860.vsidx
+/.vs/NotesApp/DesignTimeBuild/.dtbcache.v2
