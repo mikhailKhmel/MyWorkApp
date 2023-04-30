@@ -31,7 +31,7 @@ function Footer() {
   function handleCreateFolder() {
     setOpen(false);
     dispatch(setFolders(
-        [...folders, createFolder(folderTitle, parent, profile._id)]));
+        [...folders, createFolder(folderTitle, parent, profile.id)]));
   }
 
   function handleOpenEditor() {

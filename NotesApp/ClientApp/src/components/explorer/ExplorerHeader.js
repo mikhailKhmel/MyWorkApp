@@ -20,7 +20,7 @@ function ExplorerHeader() {
       if (parent === -1) {
         setTitle('Все заметки');
       } else {
-        setTitle(folders.find(x => x._id === parent).title);
+        setTitle(folders.find(x => x.id === parent).title);
       }
     } else {
       setTitle('Все папки');

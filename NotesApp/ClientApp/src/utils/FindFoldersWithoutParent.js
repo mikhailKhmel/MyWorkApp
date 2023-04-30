@@ -4,8 +4,8 @@ export function findFoldersWithoutParent(data) {
   let i = 0;
   while (i < clearData.length) {
     const parent = clearData[i].parent;
-    const ids = data.find(x => x._id === parent &&
-        !dataWithoutParent.map(x => x._id).includes(parent));
+    const ids = data.find(x => x.id === parent &&
+        !dataWithoutParent.map(x => x.id).includes(parent));
     if (!ids) {
       dataWithoutParent.push(clearData[i]);
     }

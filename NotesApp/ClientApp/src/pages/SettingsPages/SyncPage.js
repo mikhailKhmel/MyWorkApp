@@ -2,14 +2,17 @@
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {useState} from 'react';
+import {useContext, useState} from 'react';
 import {setProfile} from '../../slicers/ProfileSlice';
 import {setNotes} from '../../slicers/NotesSlice';
 import {setFolders} from '../../slicers/FoldersSlice';
 import moment from 'moment';
 import {useNavigate} from 'react-router-dom';
+import SignalRContext from '../../components/SignalRContext';
+import {CreateProfile} from '../../utils/CreateProfile';
 
 function Sync() {
+  const connection = useContext(SignalRContext);
   const router = useNavigate();
   const profile = useSelector(state => state.profile.profile);
   const notes = useSelector(state => state.notes.notes);
@@ -26,30 +29,31 @@ function Sync() {
   async function handleSubmit() {
     setErrorMsg({ok: false, message: ''});
     if (token) {
-      const result = await fetch('/api/token',
+      const result = await fetch('/token',
           {
             method: 'POST', headers: {
-              'Accept': 'application/json',
               'Content-Type': 'application/json',
-            }, body: JSON.stringify({token: token}),
+            }, body: JSON.stringify(token),
           });
 
       if (result.ok) {
-        const profile = await result.json();
+        const {Id, IsActive, LastSync, Token} = await result.json();
+        const profile = CreateProfile({Id, Token, IsActive, LastSync});
         dispatch(setProfile(profile));
 
         // Установка ID пользователя в заметки и папки
         const tempNotes = [];
         const tempFolders = [];
         for (let note of notes) {
-          tempNotes.push({...note, userId: profile._id});
+          tempNotes.push({...note, userId: profile.id});
         }
         for (let folder of folders) {
-          tempFolders.push({...folder, userId: profile._id});
+          tempFolders.push({...folder, userId: profile.id});
         }
         dispatch(setNotes(tempNotes));
         dispatch(setFolders(tempFolders));
 
+        connection.invoke('Enter', connection.connectionId, profile.id);
         setErrorMsg({message: 'Пользователь найден!', ok: true});
       } else {
         setErrorMsg({
@@ -81,12 +85,14 @@ function Sync() {
           <div
               className="mt-3 p-2 rounded-lg flex flex-col gap-1 bg-slate-100 dark:bg-neutral-700">
             <div>
-              ID пользователя: {profile._id || 'Неизвестно'}
+              ID пользователя: {profile.id || 'Неизвестно'}
             </div>
             <div
-                className={profile.active ? 'text-green-500 dark:text-green-300'
-                    : 'text-red-500 dark:text-red-300'}>
-              Статус: {profile.active ? 'Активен' : 'Неактивен'}
+                className={profile.isActive ?
+                    'text-green-500 dark:text-green-300'
+                    :
+                    'text-red-500 dark:text-red-300'}>
+              Статус: {profile.isActive ? 'Активен' : 'Неактивен'}
             </div>
             <div>
               Последняя синхронизация: {profile.lastSync ? moment(

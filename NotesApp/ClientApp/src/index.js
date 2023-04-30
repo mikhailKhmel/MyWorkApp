@@ -8,6 +8,7 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from 'react-redux';
 import {store} from './slicers/Store';
 import {ThemeProvider} from 'next-themes';
+import SignalRProvider from './components/SignalRProvider';
 
 const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
 const rootElement = document.getElementById('root');
@@ -15,12 +16,13 @@ const root = createRoot(rootElement);
 
 root.render(
     <Provider store={store}>
-      <ThemeProvider attribute="class">
-        <BrowserRouter basename={baseUrl}>
-          <App/>
-        </BrowserRouter>
-      </ThemeProvider>
-
+      <SignalRProvider>
+        <ThemeProvider attribute="class">
+          <BrowserRouter basename={baseUrl}>
+            <App/>
+          </BrowserRouter>
+        </ThemeProvider>
+      </SignalRProvider>
     </Provider>,
 );
 

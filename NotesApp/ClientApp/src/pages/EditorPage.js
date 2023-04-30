@@ -5,6 +5,7 @@ import {setNotes} from '../slicers/NotesSlice.js';
 import EditorHeader from '../components/editor/EditorHeader';
 import {useNavigate} from 'react-router-dom';
 import Editor from '../components/editor/Editor';
+import moment from 'moment';
 
 function EditorPage() {
   const [title, setTitle] = useState('');
@@ -28,16 +29,16 @@ function EditorPage() {
 
     const tempNotes = [...notes];
     if (currentEditableNote) {
-      const note = {...tempNotes.find(x => x._id === currentEditableNote)};
+      const note = {...tempNotes.find(x => x.id === currentEditableNote)};
       note.title = title;
       note.content = content;
-      note.lastUpdate = Date.now();
-      note.userId = profile._id;
-      tempNotes[tempNotes.findIndex(x => x._id === note._id)] = note;
+      note.lastUpdate = moment().format();
+      note.userId = profile.id;
+      tempNotes[tempNotes.findIndex(x => x.id === note.id)] = note;
 
       dispatch(setNotes([...tempNotes]));
     } else {
-      const newNote = createNote(title, content, parent, profile?._id);
+      const newNote = createNote(title, content, parent, profile?.id);
       dispatch(setNotes([...tempNotes, newNote]));
     }
     navigate('/');
@@ -45,7 +46,7 @@ function EditorPage() {
 
   useEffect(() => {
     if (currentEditableNote) {
-      const note = notes.find(x => x._id === currentEditableNote);
+      const note = notes.find(x => x.id === currentEditableNote);
       if (note) {
         setTitle(note.title);
         setContent(note.content);

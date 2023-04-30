@@ -10,6 +10,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {setNotes} from '../../slicers/NotesSlice';
 import Item from '../explorer/Item';
 import {useNavigate} from 'react-router-dom';
+import moment from 'moment';
 
 function EditorMenu(props) {
   const [openMoveDialog, setOpenMoveDialog] = useState(false);
@@ -27,20 +28,20 @@ function EditorMenu(props) {
     const tempNotes = [...notes].map(x => {
       return {...x};
     });
-    const note = {...tempNotes.find(x => x._id === currentEditableNote)};
+    const note = {...tempNotes.find(x => x.id === currentEditableNote)};
     note.isDelete = true;
-    note.lastUpdate = Date.now();
-    tempNotes[tempNotes.findIndex(x => x._id === note._id)] = {...note};
+    note.lastUpdate = moment().format();
+    tempNotes[tempNotes.findIndex(x => x.id === note.id)] = {...note};
     dispatch(setNotes([...tempNotes]));
     navigate('/');
   }
 
   function handleMoveNote() {
-    const note = {...notes.find(x => x._id === currentEditableNote)};
+    const note = {...notes.find(x => x.id === currentEditableNote)};
     note.parent = selectedFolder;
-    note.lastUpdate = Date.now();
+    note.lastUpdate = moment().format();
     dispatch(
-        setNotes([...notes.filter(x => x._id !== currentEditableNote), note]));
+        setNotes([...notes.filter(x => x.id !== currentEditableNote), note]));
     setOpenMoveDialog(false);
     props.onClose();
   }
@@ -67,16 +68,16 @@ function EditorMenu(props) {
       </DialogTitle>
       <DialogContent>
         <div className=" h-80 overflow-auto">
-          {folders && folders.filter(x => x._id !==
-              notes.find(x => x._id === currentEditableNote).parent).
+          {folders && folders.filter(x => x.id !==
+              notes.find(x => x.id === currentEditableNote).parent).
               map(folder => {
                 return (
-                    <div key={folder._id}
-                         className={selectedFolder === folder._id
+                    <div key={folder.id}
+                         className={selectedFolder === folder.id
                              ? 'bg-slate-300 rounded'
                              : ''}>
                       <Item type="folder" text={folder.title}
-                            action={() => setSelectedFolder(folder._id)}/>
+                            action={() => setSelectedFolder(folder.id)}/>
                     </div>
                 );
               })}

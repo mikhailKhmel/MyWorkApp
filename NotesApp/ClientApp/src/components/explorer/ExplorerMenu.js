@@ -13,6 +13,7 @@ import {setNotes} from '../../slicers/NotesSlice';
 import Item from './Item';
 import Input from '../Input';
 import {useNavigate} from 'react-router-dom';
+import moment from 'moment';
 
 function ExplorerMenu(props) {
   const [openRenameDialog, setOpenRenameDialog] = useState(false);
@@ -40,10 +41,10 @@ function ExplorerMenu(props) {
 
   function handleRenameFolder() {
     const tempFolder = [...folders];
-    const currentFolder = {...tempFolder.find(x => x._id === parent)};
+    const currentFolder = {...tempFolder.find(x => x.id === parent)};
     currentFolder.title = folderTitle;
-    currentFolder.lastUpdate = Date.now();
-    const index = tempFolder.findIndex(x => x._id === currentFolder._id);
+    currentFolder.lastUpdate = moment().format();
+    const index = tempFolder.findIndex(x => x.id === currentFolder.id);
     tempFolder[index] = currentFolder;
     dispatch(setFolders(tempFolder));
     setOpenRenameDialog(false);
@@ -52,7 +53,7 @@ function ExplorerMenu(props) {
   function handleRenameFolderTitle() {
     props.onClose();
     setOpenRenameDialog(true);
-    setFolderTitle(folders.find(x => x._id === parent).title);
+    setFolderTitle(folders.find(x => x.id === parent).title);
   }
 
   function handleRemoveFolderRecursive() {
@@ -65,21 +66,21 @@ function ExplorerMenu(props) {
     });
 
     const foldersForRemove = [
-      ...findFoldersWithoutParent(tempFolders.filter(x => x._id !== parent)),
-      ...tempFolders.filter(x => x._id === parent)];
+      ...findFoldersWithoutParent(tempFolders.filter(x => x.id !== parent)),
+      ...tempFolders.filter(x => x.id === parent)];
     for (const folder of tempFolders) {
-      if (foldersForRemove.map(x => x._id).includes(folder._id)) {
+      if (foldersForRemove.map(x => x.id).includes(folder.id)) {
         folder.isDelete = true;
-        folder.lastUpdate = Date.now();
+        folder.lastUpdate = moment().format();
       }
     }
 
     const notesForRemove = tempNotes.filter(x => x.parent === parent ||
-        foldersForRemove.map(y => y._id).includes(x.parent));
+        foldersForRemove.map(y => y.id).includes(x.parent));
     for (const note of tempNotes) {
-      if (notesForRemove.map(x => x._id).includes(note._id)) {
+      if (notesForRemove.map(x => x.id).includes(note.id)) {
         note.isDelete = true;
-        note.lastUpdate = Date.now();
+        note.lastUpdate = moment().format();
       }
     }
 
@@ -92,11 +93,11 @@ function ExplorerMenu(props) {
   }
 
   function handleMoveFolder() {
-    const folder = {...folders.find(x => x._id === parent)};
+    const folder = {...folders.find(x => x.id === parent)};
     folder.parent = selectedFolder;
-    folder.lastUpdate = Date.now();
+    folder.lastUpdate = moment().format();
     dispatch(
-        setFolders([...folders.filter(x => x._id !== folder._id), folder]));
+        setFolders([...folders.filter(x => x.id !== folder.id), folder]));
     setOpenMoveDialog(false);
   }
 
@@ -137,14 +138,14 @@ function ExplorerMenu(props) {
                 <Item type="folder" text="Все папки"
                       action={() => setSelectedFolder(null)}/>
               </div>
-              {folders && folders.filter(x => x._id !== parent).map(folder => {
+              {folders && folders.filter(x => x.id !== parent).map(folder => {
                 return (
-                    <div key={folder._id}
-                         className={selectedFolder === folder._id
+                    <div key={folder.id}
+                         className={selectedFolder === folder.id
                              ? 'bg-slate-300 rounded-lg'
                              : ''}>
                       <Item type="folder" text={folder.title}
-                            action={() => setSelectedFolder(folder._id)}/>
+                            action={() => setSelectedFolder(folder.id)}/>
                     </div>
                 );
               })}

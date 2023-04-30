@@ -61,8 +61,8 @@ function ItemsList() {
     sleep(0).then(() => setSlide(false));
   }
 
-  function handleOpenNote(_id) {
-    dispatch(setCurrentEditableNote(_id));
+  function handleOpenNote(id) {
+    dispatch(setCurrentEditableNote(id));
     navigate('/editor');
   }
 
@@ -79,9 +79,9 @@ function ItemsList() {
                               action={() => handleClickFolder(-1)}/>}
             {localFolders && localFolders.map(value => {
               return (
-                  <Item key={value._id} type="folder"
+                  <Item key={value.id} type="folder"
                         text={value.title || value.content}
-                        action={() => handleClickFolder(value._id)}/>
+                        action={() => handleClickFolder(value.id)}/>
               );
             })}
             {localNotes && localNotes.map(value => {
@@ -97,9 +97,9 @@ function ItemsList() {
                 }
               }
               return (
-                  <Item key={value._id} type="note"
+                  <Item key={value.id} type="note"
                         text={text}
-                        action={async () => await handleOpenNote(value._id)}/>
+                        action={async () => await handleOpenNote(value.id)}/>
               );
             })}
           </div>

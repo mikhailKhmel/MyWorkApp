@@ -1,12 +1,13 @@
 import {v4} from 'uuid';
+import moment from 'moment';
 
 function createNote(title, content, parent, userId) {
   return {
-    _id: v4(),
+    id: v4(),
     title,
     content,
     userId,
-    lastUpdate: Date.now(),
+    lastUpdate: moment().format(),
     parent,
     isDelete: false,
   };
