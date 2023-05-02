@@ -22,9 +22,9 @@ const SignalRProvider = ({children}) => {
   useEffect(() => {
     if (connection) {
 
-      connection.on('UpdateData', async () => {
-        if (profile && profile.id && profile.id !== '') {
-          const res = await fetch('/sync/getdata/' + profile.id, {method: 'GET'});
+      connection.on('UpdateData', async (connectionId, userId) => {
+        if (connectionId !== connection.connectionId) {
+            const res = await fetch('/Sync/GetData/' + userId, {method: 'GET'});
           const data = await res.json();
           const {notes, folders, profile} = data;
           dispatch(setNotes(notes));

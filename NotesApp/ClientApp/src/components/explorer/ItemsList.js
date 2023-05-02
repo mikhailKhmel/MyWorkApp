@@ -32,7 +32,7 @@ function ItemsList() {
 
     const tempNotes = [...notes.filter(x => !x.isDelete)];
     if (parent) {
-      if (parent === -1) {
+      if (parent === '-1') {
         setLocalNotes([...tempNotes]);
       } else {
         setLocalNotes(tempNotes.filter(x => x.parent === parent));
@@ -76,7 +76,7 @@ function ItemsList() {
               <ArrowLeftIcon/> Назад
             </div>}
             {!parent && <Item type="folder" text="Все заметки"
-                              action={() => handleClickFolder(-1)}/>}
+                              action={() => handleClickFolder('-1')}/>}
             {localFolders && localFolders.map(value => {
               return (
                   <Item key={value.id} type="folder"

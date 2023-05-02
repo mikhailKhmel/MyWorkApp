@@ -10,6 +10,6 @@ public class MyHub : Hub
     {
         await Groups.AddToGroupAsync(connectionId, userId);
         
-        await Clients.Group(userId).SendAsync("UpdateData");
+        await Clients.Caller.SendAsync("UpdateData", string.Empty, userId);
     }
 }

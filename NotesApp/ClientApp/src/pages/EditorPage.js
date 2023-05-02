@@ -49,7 +49,7 @@ function EditorPage() {
       const note = notes.find(x => x.id === currentEditableNote);
       if (note) {
         setTitle(note.title);
-        setContent(note.content);
+        setContent(note.content || []);
       } else {
         setContent([]);
       }
@@ -66,7 +66,7 @@ function EditorPage() {
                   onChange={(event) => {
                     setTitle(event.target.value);
                   }}
-                  className="text-2xl font-semibold p-2 resize-none outline-0 mt-3 mb-2 rounded-lg bg-slate-100"
+                  className="text-2xl font-semibold p-2 resize-none outline-0 mt-3 mb-2 rounded-lg bg-slate-100 dark:bg-neutral-600"
                   placeholder="Заголовок"/>
 
           <Editor refValue={ref} data={content} onChange={setContent}

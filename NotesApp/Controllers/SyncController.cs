@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using NotesApp.Database;
 using NotesApp.Hubs;
 using NotesApp.Models;
+using NotesApp.Models.DbModels;
+using NotesApp.Utils;
 
 namespace NotesApp.Controllers;
 
@@ -21,26 +23,39 @@ public class SyncController : ControllerBase
     }
 
     [HttpGet("GetData/{userId}")]
-    public async Task<(List<Folder>, List<Note>, Profile)> GetData(Guid userId)
+    public async Task<IActionResult> GetData(Guid userId)
     {
-        var folders = _context.Folders.Where(x => x.UserId == userId);
-        var notes = _context.Notes.Where(x => x.UserId == userId);
+        var folders = await _context.Folders.Where(x => x.UserId == userId).ToListAsync();
+        var notes = await _context.Notes.Where(x => x.UserId == userId).ToListAsync();
         var profile = await _context.Profiles.FirstAsync(x => x.Id == userId);
-        return (folders.ToList(), notes.ToList(), profile);
+        return Ok(new SyncResponse {profile = profile, notes = notes, folders = folders});
     }
 
     [HttpPost]
-    public async Task Sync(SyncData data)
+    public async Task Sync(SyncRequest data)
     {
-        var userId = data.userId;
+        var userId = data.Profile.Id;
         var notes = data.notes;
         var folders = data.folders;
         
         var correctNotes = new List<Note>();
         var correctFolders = new List<Folder>();
 
+        var profile = await _context.Profiles.FindAsync(userId);
+        
+
         var serverNotes = _context.Notes.Where(x => x.UserId == userId).ToList();
         var serverFolders = _context.Folders.Where(x => x.UserId == userId).ToList();
+
+        var needNotesUpdate = Utils.Utils.CompareArrays(notes.Select(x => new CompareModel { Id = x.Id, LastSync = x.LastUpdate }).ToList(), serverNotes.Select(x => new CompareModel { Id = x.Id, LastSync = x.LastUpdate }).ToList()
+            );
+        var needFoldersUpdate = Utils.Utils.CompareArrays(folders.Select(x => new CompareModel { Id = x.Id, LastSync = x.LastUpdate }).ToList(), serverFolders.Select(x => new CompareModel { Id = x.Id, LastSync = x.LastUpdate }).ToList()
+            );
+
+        if (!needNotesUpdate && !needFoldersUpdate)
+        {
+            return;
+        }
 
         if (notes.Count == 0 && serverNotes.Count != 0)
         {
@@ -138,14 +153,13 @@ public class SyncController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        var profile = await _context.Profiles.FindAsync(userId);
+        
         if (profile != null)
         {
             profile.LastSync = DateTime.Now;
             _context.Profiles.Update(profile);
             await _context.SaveChangesAsync();
         }
-
-        await _hubContext.Clients.Group(userId.ToString()).SendAsync("UpdateData");
+        await _hubContext.Clients.Group(userId.ToString()).SendAsync("UpdateData", data.connectionId, data.Profile.Id);
     }
 }

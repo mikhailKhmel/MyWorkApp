@@ -17,7 +17,7 @@ function ExplorerHeader() {
 
   useEffect(() => {
     if (parent) {
-      if (parent === -1) {
+      if (parent === '-1') {
         setTitle('Все заметки');
       } else {
         setTitle(folders.find(x => x.id === parent).title);

@@ -37,8 +37,8 @@ function Sync() {
           });
 
       if (result.ok) {
-        const {Id, IsActive, LastSync, Token} = await result.json();
-        const profile = CreateProfile({Id, Token, IsActive, LastSync});
+        const {id, isActive, lastSync, token} = await result.json();
+          const profile = CreateProfile({ id, isActive, lastSync, token });
         dispatch(setProfile(profile));
 
         // Установка ID пользователя в заметки и папки
@@ -53,7 +53,7 @@ function Sync() {
         dispatch(setNotes(tempNotes));
         dispatch(setFolders(tempFolders));
 
-        connection.invoke('Enter', connection.connectionId, profile.id);
+        connection.invoke('Enter', connection.connectionId, id);
         setErrorMsg({message: 'Пользователь найден!', ok: true});
       } else {
         setErrorMsg({

@@ -16,6 +16,7 @@ export default function App() {
   const folders = useSelector((state) => state.folders.folders);
 
   const dispatch = useDispatch();
+  
 
   useEffect(() => {
 
@@ -30,25 +31,18 @@ export default function App() {
 
   }, [dispatch]);
 
-  useEffect(() => {
-    if (connection && connection._connectionState === 'Connected' &&
-        profile.id !== '') {
-      fetch('/Sync',
-          {
-            method: 'POST', headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json',
-            }, body: JSON.stringify({userId: profile.id, folders, notes}),
-          }).then(async (response) => {
-        const data = await response.json();
-        const {notes, folders, lastSync} = data;
-        dispatch(setNotes(notes));
-        dispatch(setFolders(folders));
-        dispatch(setProfile({...profile, lastSync}));
-      }).catch((error) => {
-        setIsOnline(false);
-      });
-    }
+    useEffect(() => {
+        if (connection && connection._connectionState === 'Connected' &&
+            profile && profile.id !== '') {
+            fetch('/Sync',
+                {
+                    method: 'POST', headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                    }, body: JSON.stringify({ connectionId: connection.connectionId, profile: profile, folders, notes }),
+                });
+        };
+    
 
   }, [connection, folders, notes, profile]);
 

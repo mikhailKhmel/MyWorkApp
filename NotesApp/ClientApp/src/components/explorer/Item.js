@@ -21,7 +21,7 @@ function Item(props) {
   return (
       <div onClick={action}
            className="p-2 rounded-md flex flex-row justify-between items-center cursor-pointer sm:hover:bg-slate-100 dark:bg-neutral-600 hover:dark:bg-neutral-500"
-           key={-1}>
+           key={'-1'}>
         <div className="flex flex-row gap-3 items-center">
           {icons[type]}
           {text.length >= TextLength

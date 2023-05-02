@@ -1,8 +1,8 @@
-export function CreateProfile({Id, Token, IsActive, LastSync}) {
+export function CreateProfile({ id, token, isActive, lastSync }) {
   return {
-    id: Id || '',
-    token: Token || '',
-    isActive: IsActive || false,
-    lastSync: LastSync || null,
+      id: id || '',
+      token: token || '',
+      isActive: isActive || false,
+      lastSync: lastSync || null,
   };
 }

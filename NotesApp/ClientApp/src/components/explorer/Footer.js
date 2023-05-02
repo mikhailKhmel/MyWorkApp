@@ -44,7 +44,7 @@ function Footer() {
         <div
             className="fixed bottom-0 w-full drop-shadow flex flex-row justify-between items-stretch py-2 px-5 bg-white rounded-t-md dark:bg-neutral-600">
           <button
-              className={`${parent === -1 ?
+              className={`${parent === '-1' ?
                   'invisible' :
                   ''} transition-all ease-in-out active:scale-125 sm:hover:scale-125`}
               onClick={() => setOpen(true)}>

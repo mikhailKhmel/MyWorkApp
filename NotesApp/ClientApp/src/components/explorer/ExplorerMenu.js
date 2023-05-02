@@ -107,11 +107,11 @@ function ExplorerMenu(props) {
           <DropdownItem onClick={() => navigate('/settings')}>
             Настройки
           </DropdownItem>
-          {parent && parent !== -1 &&
+          {parent && parent !== '-1' &&
               <DropdownItem onClick={handleRenameFolderTitle}>
                 Переименовать
               </DropdownItem>}
-          {parent && parent !== -1 &&
+          {parent && parent !== '-1' &&
               <DropdownItem onClick={() => {
                 props.onClose();
                 setOpenMoveDialog(true);
@@ -119,7 +119,7 @@ function ExplorerMenu(props) {
                 Переместить
               </DropdownItem>
           }
-          {parent && parent !== -1 &&
+          {parent && parent !== '-1' &&
               <DropdownItem onClick={() => setOpenRemoveDialog(true)}>
                 Удалить
               </DropdownItem>

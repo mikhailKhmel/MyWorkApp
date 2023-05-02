@@ -1,4 +1,4 @@
-namespace NotesApp.Models;
+namespace NotesApp.Models.DbModels;
 
 public class Profile
 {
